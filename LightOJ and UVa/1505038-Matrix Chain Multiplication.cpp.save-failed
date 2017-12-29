@@ -1,0 +1,93 @@
+#include <bits/stdc++.h>
+#include<vector>
+#define ll                                      long long int
+#define fi                                      freopen("in.txt", "r", stdin)
+#define fo                                      freopen("out.txt", "w", stdout)
+#define m0(a) memset(a , 0 , sizeof(a))
+#define m1(a) memset(a , -1 , sizeof(a))
+#define inf LLONG_MAX
+#define min3(a,b,c) min(a,min(b,c))
+#define max3(a,b,c) max(a,max(b,c))
+#define ones(mask)  __builtin_popcount(mask)
+#define mx 150000
+
+#define MAX_HEAP_SIZE 100000
+
+#define MAXREAL 999999.0
+#define nll -999999
+
+using namespace std;
+
+class Seq
+{
+public:
+    ll val ;
+    string str ;
+    Seq()
+    {
+        val = inf ;
+        str = "" ;
+    }
+};
+
+ll Row[1000], Colm[1000] ;
+char  Name[1000] ;
+Seq dp[1000][1000] ;
+
+
+Seq MCM(ll Begin, ll End)
+{
+    if(Begin >= End)
+    {
+        return 0 ;
+    }
+    if(dp[Begin][End] != -1) return dp[Begin][End] ;
+
+    Seq ans ;
+
+    ans.str = " ( " ;
+    for(ll Mid = Begin ; Mid <= End ; Mid++)
+    {
+        ll Left, Right, Multipliers ;
+        Left = MCM(Begin, Mid) ;
+        Right = MCM(Mid+1, End) ;
+        Multipliers = Row[Begin] * Colm[End] * Colm[Begin] ;
+
+        if(ans.val < Left + Right + Multipliers)
+        {
+            ans.str = ans.str + "" ;
+        }
+        else
+        {
+            ans.str = ans.str + Name[Begin] + " " + Name[End] + " " ;
+        }
+
+        ans.val = min(ans.val, Left + Right + Multipliers) ;
+    }
+
+    ans.str = ans.str + " ) " ;
+
+    return dp[Begin][End] = ans ;
+}
+
+
+int main()
+{
+//    fi ;
+
+    m1(dp) ;
+    ll N ;
+    cin >> N ;
+
+    for(ll i = 0 ; i < N ; i++)
+    {
+        cin >> Name[i] >> Row[i] >> Colm[i] ;
+    }
+
+    Seq ans = MCM(0, N-1) ;
+
+    cout << ans.val << endl ;
+    cout << ans.str << endl ;
+
+    return 0 ;
+}
